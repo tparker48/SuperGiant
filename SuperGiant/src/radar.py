@@ -1,6 +1,6 @@
-from graphics import *
-from constants import *
-from planet import *
+from lib.graphics import *
+from src.constants import *
+from src.planet import *
 
 class Radar:
     found_planet = None

@@ -1,5 +1,5 @@
-from graphics import *
-from constants import *
+from lib.graphics import *
+from src.constants import *
 
 class Inventory:
     credits = INITIAL_CREDITS

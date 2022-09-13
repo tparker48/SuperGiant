@@ -1,8 +1,8 @@
-from planet import *
-from constants import *
-from inventory import *
-from radar import *
-from orbit import *
+from src.planet import *
+from src.constants import *
+from src.inventory import *
+from src.radar import *
+from src.orbit import *
 
 
 class GameState:

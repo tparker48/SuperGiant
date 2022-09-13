@@ -1,4 +1,4 @@
-from graphics import *
+from lib.graphics import *
 
 class KeyboardHandler():
     window = None

@@ -1,4 +1,4 @@
-from gamestate import *
+from src.gamestate import *
 
 class ActionHandler:
     game_state = None

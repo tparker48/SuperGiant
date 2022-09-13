@@ -1,4 +1,4 @@
-from graphics import color_rgb
+from lib.graphics import color_rgb
 
 # window dimensions
 W = 1200

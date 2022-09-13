@@ -1,7 +1,7 @@
 import random
 import time
-from graphics import *
-from planetData import *
+from lib.graphics import *
+from src.planetData import *
 
 class PlanetGraphic:
     color = None

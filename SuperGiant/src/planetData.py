@@ -1,4 +1,4 @@
-from graphics import *
+from lib.graphics import *
 
 masses = ['Molecular', 'Miniscule', 'Tiny', 'Small', 'Medium', 'Large', 'Massive', 'Supermassive', 'Giant', 'Supergiant', 'Goliath']
 

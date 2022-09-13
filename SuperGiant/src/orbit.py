@@ -1,5 +1,5 @@
-from planet import *
-from constants import *
+from src.planet import *
+from src.constants import *
 from math import ceil
 
 class Orbit:

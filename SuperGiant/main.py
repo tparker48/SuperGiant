@@ -1,10 +1,10 @@
 import random
-from constants import *
-from graphics import *
-from keyboard_handler import *
-from action_handler import *
-from planet import *
-from gamestate import *
+from lib.graphics import *
+from src.constants import *
+from src.keyboard_handler import *
+from src.action_handler import *
+from src.planet import *
+from src.gamestate import *
 
 win = GraphWin(width = W, height = H)
 win.setCoords(0, 0, W, H)
