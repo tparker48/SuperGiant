@@ -1,2 +1,3 @@
-# supergiant
-manage a spacefaring colony in an infinite, simulated universe
+# SuperGiant
+
+A space exploration sim developed in native python
