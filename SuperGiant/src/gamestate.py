@@ -137,6 +137,10 @@ class GameState:
             self.game_log = NO_SUCH_PLANET
             return
 
+        if not planet.can_increase_tech_level():
+            self.game_log = MAX_TECH_LEVEL_REACHED
+            return
+
         cost = planet.get_cost_to_increase_tech_level()
         if cost > self.inventory.credits:
             self.game_log = CANT_AFFORD + ' (need {}).'.format(cost)

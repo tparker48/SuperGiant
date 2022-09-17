@@ -48,6 +48,7 @@ INCREASED_CAPACITY = 'Increased Orbit Capacity'
 BOUGHT_FUEL = 'Purchased Fuel: '
 NAME_TOO_LONG = 'Name Too Long! (10 Characters Max)'
 MAX_CAPACITY_REACHED = 'Max Orbit Capacity Reached!'
+MAX_TECH_LEVEL_REACHED = 'Max Tech Level Reached!'
 
 ACTIONS_INFO = [
     'search [s, m, l]  - search for planets',

@@ -31,6 +31,8 @@ class ActionHandler:
             return
         
         words = action.split()
+        if len(words) == 1 and words[0] == 'quit':
+            exit(0)
 
         if len(words) == 1:
             action = words[0]
@@ -38,9 +40,6 @@ class ActionHandler:
         elif len(words) == 2:
             action = words[0]
             args = words[1]
-        
-        if words[0] == 'quit':
-            exit(0)
 
         if action in self.actions and len(words) < 3:
             self.actions[action](args)
