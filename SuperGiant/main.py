@@ -1,48 +1,39 @@
 import random
 from lib.graphics import *
-from src.constants import *
+from src.globals import *
 from src.keyboard_handler import *
 from src.action_handler import *
 from src.planet import *
 from src.gamestate import *
+from src.save_manager import *
 
-win = GraphWin(width = W, height = H)
-win.setCoords(0, 0, W, H)
-win.setBackground(BG_FILL)
 
+# draw stars
 for i in range(100):
     x = int(random.random()*W)
     y = int(random.random()*H)
     radius = 1 + int(random.random()*3)
-    tempC = Circle(Point(x,y), radius)
     intensity = 25 + int(random.random()*55)
-    tempC.setFill(color_rgb(intensity,intensity,intensity))
-    tempC.setOutline(color_rgb(intensity,intensity,intensity))
-    tempC.draw(win)
+    star = Circle(Point(x,y), radius)
+    star.setFill(color_rgb(intensity,intensity,intensity))
+    star.setOutline(color_rgb(intensity,intensity,intensity))
+    star.draw(WINDOW)
 
-game_state = GameState(win)
-kb_handler = KeyboardHandler(win)
-action_handler = ActionHandler(game_state)
+TEXT_GUI.draw(WINDOW)
 
-game_log = Text(Point(W//2, H//8), '')
-game_log.setStyle('italic')
-game_log.setTextColor(color_rgb(190,190,190))
-game_log.setSize(12)
-game_log.draw(win)
+save_manager = SaveManager()
+kb_handler = KeyboardHandler()
+action_handler = ActionHandler(save_manager)
 
-input_text = Text(Point(W//2, H//14), '')
-input_text.setTextColor('white')
-input_text.setSize(13)
-input_text.draw(win)
+action_handler.show_loadsave_help()
+game_state = save_manager.save_select(kb_handler, action_handler)
 
-game_state.inventory.credits = 999999999
-game_state.inventory.fuel = 999999999
+action_handler.connect_actions_to_game_state(game_state)
+game_state.update()
+action_handler.show_actions_help()
 
 while True:
     kb_handler.read_key()
-    phrase = kb_handler.pop_phrase()
-    action_handler.execute_action(phrase)
-
-    input_text.setText(': ' + kb_handler.get_buffer_string())
-    game_log.setText(game_state.game_log)
+    action_handler.execute_action(kb_handler.pop_phrase())
+    TEXT_GUI.set_input_text(': ' + kb_handler.get_buffer_string())
     game_state.update()

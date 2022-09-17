@@ -1,17 +1,17 @@
 from lib.graphics import *
+from src.globals import WINDOW
+
 
 class KeyboardHandler():
-    window = None
-    buffer = []
-    phrases = []
-    phrase_history = []
-    history_spot = -1
+    def __init__(self):
+        self.buffer = []
+        self.phrases = []
+        self.phrase_history = []
+        self.history_spot = -1
 
-    def __init__(self, graphics_window):
-        self.window = graphics_window
 
     def read_key(self):
-        key = self.window.checkKey()
+        key = WINDOW.checkKey()
 
         if not key:
             return
@@ -50,16 +50,19 @@ class KeyboardHandler():
             self.buffer.append(key)
             return
     
+
     def read_buffer(self):
         self.phrases.append(self.get_buffer_string())
         self.phrase_history.append(self.get_buffer_string())
         self.buffer.clear()
+
 
     def pop_phrase(self):
         if len(self.phrases) != 0:
             return self.phrases.pop(0)
         else:
             return None
+    
     
     def get_buffer_string(self):
         return ''.join(self.buffer)

@@ -1,19 +1,16 @@
 import random
 import time
+from src.globals import *
 from lib.graphics import *
 from src.planetData import *
 
-class PlanetGraphic:
-    color = None
-    size = 0.0
-    civ_type = ""
-    flag = None
-    planet_circle = None
 
+class PlanetGraphic:
     def __init__(self, material, planet_mass, civilization_type):
         self.color = material_colors[material]
         self.size = 15 + (masses.index(planet_mass)+1)*5
         self.civ_type = civilization_type
+
 
     def draw(self, x, y, graphics_window):
         self.planet_circle = Circle(Point(x,y), self.size)
@@ -30,30 +27,13 @@ class PlanetGraphic:
         self.flag.setOutline(civilization_colors[self.civ_type])
         self.flag.draw(graphics_window)
 
+
     def undraw(self):
         self.planet_circle.undraw()
         self.flag.undraw()
 
+
 class Planet:
-    name = ""
-    material = ""
-    planet_mass = ""
-    civilization_type = ""
-
-    graphic = None
-
-    resource_amount = 0.0
-    resource_drained = 0.0
-    resource_value = 0.0
-    resource_is_sustainable = False
-
-    civ_tech_level = 0
-    civ_production_rate = 0.0
-    civ_production_efficiency = 0.0
-    civ_operational_cost = 0.0
-
-    process_cooldown = 1
-
     def __init__(self, material_lvl, planet_mass, civilization_type):
         self.material = random.sample(materials[material_lvl], 1)[0]
         self.planet_mass = planet_mass
@@ -62,6 +42,7 @@ class Planet:
         self.graphic = PlanetGraphic(self.material, planet_mass, civilization_type)
 
         self.resource_amount = 25.0 * + (2.0 * (masses.index(planet_mass)+1.0))**3
+        self.resource_drained = 0.0
         self.resource_value = material_values[material_lvl]
         self.resource_is_sustainable = self.material in ['Organic', 'Fiber', 'Art', 'Engineering', 'Plasma', '???']
 
@@ -70,34 +51,46 @@ class Planet:
         self.civ_production_efficiency = civilization_production_efficiencies[civilization_type]
         self.civ_operational_cost = civilization_operational_costs[civilization_type]
 
-        self.last_process_time = time.time() - self.process_cooldown
+        self.last_process_time = time.time() - self.get_cooldown_time()
     
+
     def get_output(self):
         return 5.0 * (self.civ_production_rate + self.civ_tech_level)
     
+
     def get_resource_drain(self):
         if self.resource_is_sustainable:
             return 0.0
         return self.get_output()*(1.0 - self.civ_production_efficiency)
-    
+
+
     def get_cost(self):
         return self.resource_value * self.get_output() * self.civ_operational_cost / 2
+
 
     def get_profit(self):
         monthly_income = (self.resource_value * self.get_output())
         monthly_cost = self.get_cost()
         return monthly_income - monthly_cost
 
+
     def get_processesses_until_empty(self):
         if self.resource_is_sustainable:
             return 'inf'
         return (self.resource_amount - self.resource_drained) / self.get_resource_drain()
 
+
     def get_material_value(self):
         return self.resource_value
+        
+
+    def get_cooldown_time(self):
+        return (MAX_COOLDOWN + 1.0/MAX_TECH_LEVEL) - MAX_COOLDOWN*(self.civ_tech_level/MAX_TECH_LEVEL)
+
 
     def get_cooldown_remaining(self):
-        return max(0, self.process_cooldown - (time.time() - self.last_process_time))
+        return max(0, self.get_cooldown_time() - (time.time() - self.last_process_time))
+
 
     def enough_resources_to_process(self):
         resources_remaining = self.resource_amount - self.resource_drained
@@ -106,33 +99,50 @@ class Planet:
 
         return True
 
+
     def can_process(self):
         return self.enough_resources_to_process() and (self.get_cooldown_remaining() == 0)
+
 
     def process_materials(self):
         self.resource_drained += self.get_resource_drain()
         self.last_process_time = time.time()
         return self.get_profit()
 
+
+    def can_increase_tech_level(self):
+        return self.civ_tech_level < MAX_TECH_LEVEL
+
+
     def get_cost_to_increase_tech_level(self):
-        return (self.civ_tech_level**2) * 10000.0
+        return 7500.0 * (self.civ_tech_level)
+
 
     def increase_tech_level(self):
         self.civ_tech_level+=1
 
+
+    def get_tech_level(self):
+        return self.civ_tech_level
+
+
     def get_planet_cost(self):
         return self.resource_value * self.get_output() * (2.0 * (masses.index(self.planet_mass)+1.0))
+
 
     def get_planet_value(self):
         drain_percentage = float(self.resource_amount-self.resource_drained)/self.resource_amount
         initial_value = self.get_planet_cost()
         return (initial_value*drain_percentage) + (((self.civ_tech_level-1)**2) * 10000.0)
 
+
     def get_description(self):
         return self.planet_mass + ', ' + self.civilization_type + ', ' + self.material
 
-    def draw(self, x, y, graphics_window):
-        self.graphic.draw(x, y, graphics_window)
+
+    def draw(self, x, y):
+        self.graphic.draw(x, y, WINDOW)
+
 
     def undraw(self):
         self.graphic.undraw()
@@ -155,6 +165,7 @@ class PlanetFactory:
             return 5
         else:
             return 6
+
 
     def get_random_planet_mass():
         roll = roll = 100.0 * random.random()
